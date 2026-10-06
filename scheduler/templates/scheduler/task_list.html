@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}My Tasks — Task Scheduler{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-list-task me-1"></i>My Tasks</h1>
+    <button type="button" class="btn btn-primary rounded-pill js-add-task" data-url="{% url 'task_create' %}"><i class="bi bi-plus-lg me-1"></i>Add Task</button>
+</div>
+
+<div id="taskTableContainer" data-refresh-url="{% url 'task_list' %}">
+    {% include 'scheduler/partials/task_table.html' %}
+</div>
+{% endblock %}

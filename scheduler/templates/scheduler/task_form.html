@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}{% if mode == 'edit' %}Edit Task{% else %}Add Task{% endif %} — Task Scheduler{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h1>{% if mode == 'edit' %}Edit Task{% else %}Add Task{% endif %}</h1>
+    {% include 'scheduler/partials/task_form_fields.html' %}
+</div>
+{% endblock %}

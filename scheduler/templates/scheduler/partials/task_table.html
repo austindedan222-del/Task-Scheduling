@@ -1,0 +1,39 @@
+{% if tasks %}
+<div class="table-wrapper shadow-sm">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Priority</th>
+                <th>Deadline</th>
+                <th>Duration</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="taskTableBody">
+            {% for task in tasks %}
+            <tr data-task-id="{{ task.pk }}">
+                <td data-label="Title">{{ task.title }}</td>
+                <td data-label="Priority">
+                    <span class="priority-badge rounded-pill priority-{{ task.priority }}">{{ task.priority }}</span>
+                </td>
+                <td data-label="Deadline">{{ task.deadline }}</td>
+                <td data-label="Duration">{{ task.duration }} min</td>
+                <td class="row-actions">
+                    <button type="button" class="btn btn-small rounded-pill btn-ghost js-edit-task"
+                            data-url="{% url 'task_update' task.pk %}"><i class="bi bi-pencil-fill"></i> Edit</button>
+                    <button type="button" class="btn btn-small rounded-pill btn-danger js-delete-task"
+                            data-url="{% url 'task_delete' task.pk %}" data-title="{{ task.title }}"><i class="bi bi-trash-fill"></i> Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state" id="taskEmptyState">
+    <i class="bi bi-clipboard-check" style="font-size: 2rem; color: var(--color-text-muted);"></i>
+    <p>No tasks yet.</p>
+    <button type="button" class="btn btn-primary rounded-pill js-add-task" data-url="{% url 'task_create' %}">Add your first task</button>
+</div>
+{% endif %}

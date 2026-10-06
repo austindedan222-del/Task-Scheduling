@@ -1,0 +1,14 @@
+{% if overloaded_days %}
+<div class="overload-warning" role="alert">
+    <i class="bi bi-exclamation-octagon-fill"></i>
+    <div>
+        <strong>More work scheduled than can physically fit in a day:</strong>
+        <ul>
+            {% for day in overloaded_days %}
+            <li>{{ day.date }} — {{ day.total_minutes }} minutes of tasks due that day (a day only has 1,440 minutes)</li>
+            {% endfor %}
+        </ul>
+        <span class="overload-hint">Consider moving some of these deadlines or breaking the tasks up.</span>
+    </div>
+</div>
+{% endif %}

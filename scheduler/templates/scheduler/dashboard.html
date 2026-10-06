@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — Task Scheduler{% endblock %}
+{% block content %}
+<div class="hero-card">
+    <h1><i class="bi bi-sun-fill me-1"></i> Welcome back, {{ user.username }}</h1>
+    <p>You have {{ task_count }} task{{ task_count|pluralize }} on your plate{% if overdue %}, including {{ overdue|length }} overdue{% endif %}.</p>
+    <div class="hero-actions">
+        <button type="button" class="btn btn-light rounded-pill js-add-task" data-url="{% url 'task_create' %}">
+            <i class="bi bi-plus-lg me-1"></i>Add Task
+        </button>
+        <a href="{% url 'schedule' %}" class="btn btn-outline-light rounded-pill">
+            <i class="bi bi-magic me-1"></i>Generate Schedule
+        </a>
+        <a href="{% url 'task_list' %}" class="btn btn-outline-light rounded-pill">
+            <i class="bi bi-list-task me-1"></i>View My Tasks
+        </a>
+        {% if due_soon or overdue %}
+        <form action="{% url 'send_reminder_now' %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-light rounded-pill">
+                <i class="bi bi-envelope-fill me-1"></i>Email My Reminders Now
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+{% include 'scheduler/partials/overload_warning.html' %}
+
+<div class="summary-cards">
+    <div class="card shadow-sm">
+        <span class="card-label">Total Tasks</span>
+        <span class="card-value">{{ task_count }}</span>
+    </div>
+    <div class="card card-warning shadow-sm">
+        <span class="card-label">Due Soon</span>
+        <span class="card-value">{{ due_soon|length }}</span>
+    </div>
+    <div class="card card-danger shadow-sm">
+        <span class="card-label">Overdue</span>
+        <span class="card-value">{{ overdue|length }}</span>
+    </div>
+</div>
+
+{% if not has_tasks %}
+    <div class="empty-state">
+        <i class="bi bi-clipboard-check" style="font-size: 2rem; color: var(--color-text-muted);"></i>
+        <p>You haven't added any tasks yet.</p>
+        <button type="button" class="btn btn-primary rounded-pill js-add-task" data-url="{% url 'task_create' %}">Add your first task</button>
+    </div>
+{% else %}
+    {% if overdue %}
+    <section class="task-section">
+        <h2><i class="bi bi-exclamation-triangle-fill text-danger me-1"></i>Overdue</h2>
+        <ul class="simple-list">
+            {% for task in overdue %}
+                <li><strong>{{ task.title }}</strong> — was due {{ task.deadline }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if due_soon %}
+    <section class="task-section">
+        <h2><i class="bi bi-alarm-fill text-warning me-1"></i>Due Soon</h2>
+        <ul class="simple-list">
+            {% for task in due_soon %}
+                <li><strong>{{ task.title }}</strong> — due {{ task.deadline }} (priority {{ task.priority }})</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+{% endif %}
+{% endblock %}

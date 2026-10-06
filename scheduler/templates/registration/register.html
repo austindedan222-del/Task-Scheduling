@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Create Account — Task Scheduler{% endblock %}
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-blob one"></div>
+    <div class="auth-blob two"></div>
+
+    <div class="auth-card shadow-lg">
+        <h1><i class="bi bi-person-plus-fill text-primary"></i> Create your account</h1>
+        <p class="auth-subtitle">Set up an account to start scheduling your tasks.</p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary rounded-pill btn-block">Register</button>
+        </form>
+
+        <p class="auth-switch">
+            Already have an account? <a href="{% url 'login' %}">Log in</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

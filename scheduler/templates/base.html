@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Task Scheduler{% endblock %}</title>
+    <!-- Bootstrap + icon font: served locally from static/scheduler/vendor/ (see
+         download_assets.py at the project root) instead of a CDN, so the panel
+         demo loads instantly with no internet dependency. Our own style.css
+         loads after these, so our brand colors/components still win wherever
+         the two overlap. No Bootstrap JS — the nav toggle, modal, and toasts
+         are driven by our own small main.js. -->
+    <link href="{% static 'scheduler/vendor/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'scheduler/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'scheduler/css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">
+                <i class="bi bi-lightning-charge-fill"></i> Task Scheduler
+            </a>
+
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+
+            <nav class="main-nav" id="mainNav">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="btn btn-sm rounded-pill nav-btn {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i class="bi bi-grid-1x2-fill me-1"></i>Dashboard
+                    </a>
+                    <a href="{% url 'task_list' %}" class="btn btn-sm rounded-pill nav-btn {% if request.resolver_match.url_name == 'task_list' %}active{% endif %}">
+                        <i class="bi bi-list-task me-1"></i>My Tasks
+                    </a>
+                    <a href="{% url 'schedule' %}" class="btn btn-sm rounded-pill nav-btn {% if request.resolver_match.url_name == 'schedule' %}active{% endif %}">
+                        <i class="bi bi-calendar2-week-fill me-1"></i>Schedule
+                    </a>
+                    <form action="{% url 'logout' %}" method="post" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm rounded-pill nav-btn nav-btn-logout">
+                            <i class="bi bi-box-arrow-right me-1"></i>Logout
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-sm rounded-pill nav-btn {% if request.resolver_match.url_name == 'login' %}active{% endif %}">Login</a>
+                    <a href="{% url 'register' %}" class="btn btn-sm rounded-pill nav-btn nav-btn-primary">Create Account</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="content">
+        {% if messages %}
+            <ul class="messages" id="serverMessages">
+                {% for message in messages %}
+                    <li class="message message-{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Modal root: JS injects task-form / delete-confirm partials here for AJAX flows.
+         If JS is disabled, the buttons that would open this fall back to normal page links. -->
+    <div class="modal-overlay" id="modalOverlay" hidden>
+        <div class="modal-box shadow-lg" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <button type="button" class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Toast root: JS pushes transient success/error notices here. -->
+    <div class="toast-root" id="toastRoot" aria-live="polite"></div>
+
+    <footer class="site-footer">
+        <p>Task Scheduling System Using a Greedy Algorithm &mdash; final-year project.</p>
+    </footer>
+
+    <script>window.APP_URLS = { taskList: "{% url 'task_list' %}" };</script>
+    <script src="{% static 'scheduler/js/main.js' %}"></script>
+</body>
+</html>

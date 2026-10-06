@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Delete Task — Task Scheduler{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h1>Delete this task?</h1>
+    {% include 'scheduler/partials/task_delete_fields.html' %}
+</div>
+{% endblock %}

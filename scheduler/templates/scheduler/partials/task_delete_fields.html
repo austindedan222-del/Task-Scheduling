@@ -1,0 +1,11 @@
+<p>This will permanently delete <strong>"{{ task.title }}"</strong>. This cannot be undone.</p>
+<form method="post" class="confirm-form js-delete-form" action="{% url 'task_delete' task.pk %}">
+    {% csrf_token %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-danger rounded-pill js-submit-btn">
+            <span class="btn-label"><i class="bi bi-trash-fill me-1"></i>Yes, Delete</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+        <a href="{% url 'task_list' %}" class="btn btn-ghost rounded-pill js-cancel-task">Cancel</a>
+    </div>
+</form>

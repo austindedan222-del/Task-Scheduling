@@ -1,0 +1,5 @@
+Django>=4.2,<5.0
+reportlab>=4.0
+
+# Uncomment before switching to PostgreSQL for deployment:
+# psycopg2-binary>=2.9

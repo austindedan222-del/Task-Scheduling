@@ -1,0 +1,47 @@
+<form method="post" class="task-form js-task-form" action="{% if mode == 'edit' %}{% url 'task_update' task.pk %}{% else %}{% url 'task_create' %}{% endif %}" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <p class="form-error">{{ form.non_field_errors|striptags }}</p>
+    {% endif %}
+    <div class="form-group">
+        <label for="{{ form.title.id_for_label }}">Title</label>
+        {{ form.title }}
+        <p class="field-hint js-field-hint" data-for="title"></p>
+        {% for error in form.title.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.description.id_for_label }}">Description</label>
+        {{ form.description }}
+        {% for error in form.description.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.deadline.id_for_label }}">Deadline</label>
+        {{ form.deadline }}
+        <p class="field-hint js-field-hint" data-for="deadline"></p>
+        {% for error in form.deadline.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.priority.id_for_label }}">
+            Priority
+            <span class="priority-live-badge" id="priorityLiveBadge">{{ form.priority.value|default:5 }}</span>
+        </label>
+        {{ form.priority }}
+        <p class="field-hint">1 (lowest) to 10 (highest).</p>
+        <p class="field-hint js-field-hint" data-for="priority"></p>
+        {% for error in form.priority.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.duration.id_for_label }}">Duration (minutes)</label>
+        {{ form.duration }}
+        <p class="field-hint js-field-hint" data-for="duration"></p>
+        {% for error in form.duration.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary rounded-pill js-submit-btn">
+            <span class="btn-label"><i class="bi bi-check-lg me-1"></i>Save Task</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+        <a href="{% url 'task_list' %}" class="btn btn-ghost rounded-pill js-cancel-task">Cancel</a>
+    </div>
+</form>
