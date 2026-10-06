@@ -16,8 +16,9 @@
     <link rel="stylesheet" href="{% static 'scheduler/css/style.css' %}">
 </head>
 <body>
-    <header class="site-header">
-        <div class="header-inner">
+    <div class="app-shell">
+    <aside class="sidebar">
+        <div class="sidebar-head">
             <a class="brand" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">
                 <i class="bi bi-lightning-charge-fill"></i> Task Scheduler
             </a>
@@ -25,32 +26,39 @@
             <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
                 <span></span><span></span><span></span>
             </button>
+        </div>
 
-            <nav class="main-nav" id="mainNav">
+        <nav class="main-nav" id="mainNav">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'dashboard' %}" class="btn btn-sm rounded-pill nav-btn {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <a href="{% url 'dashboard' %}" class="btn rounded-pill nav-btn {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                         <i class="bi bi-grid-1x2-fill me-1"></i>Dashboard
                     </a>
-                    <a href="{% url 'task_list' %}" class="btn btn-sm rounded-pill nav-btn {% if request.resolver_match.url_name == 'task_list' %}active{% endif %}">
+                    <a href="{% url 'task_list' %}" class="btn rounded-pill nav-btn {% if request.resolver_match.url_name == 'task_list' %}active{% endif %}">
                         <i class="bi bi-list-task me-1"></i>My Tasks
                     </a>
-                    <a href="{% url 'schedule' %}" class="btn btn-sm rounded-pill nav-btn {% if request.resolver_match.url_name == 'schedule' %}active{% endif %}">
+                    <a href="{% url 'schedule' %}" class="btn rounded-pill nav-btn {% if request.resolver_match.url_name == 'schedule' %}active{% endif %}">
                         <i class="bi bi-calendar2-week-fill me-1"></i>Schedule
+                    </a>
+                    <a href="{% url 'help' %}" class="btn rounded-pill nav-btn {% if request.resolver_match.url_name == 'help' %}active{% endif %}">
+                        <i class="bi bi-question-circle-fill me-1"></i>Help
                     </a>
                     <form action="{% url 'logout' %}" method="post" class="logout-form">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-sm rounded-pill nav-btn nav-btn-logout">
+                        <button type="submit" class="btn rounded-pill nav-btn nav-btn-logout">
                             <i class="bi bi-box-arrow-right me-1"></i>Logout
                         </button>
                     </form>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-sm rounded-pill nav-btn {% if request.resolver_match.url_name == 'login' %}active{% endif %}">Login</a>
-                    <a href="{% url 'register' %}" class="btn btn-sm rounded-pill nav-btn nav-btn-primary">Create Account</a>
+                    <a href="{% url 'login' %}" class="btn rounded-pill nav-btn {% if request.resolver_match.url_name == 'login' %}active{% endif %}">Login</a>
+                    <a href="{% url 'register' %}" class="btn rounded-pill nav-btn nav-btn-primary">Create Account</a>
+                    <a href="{% url 'help' %}" class="btn rounded-pill nav-btn {% if request.resolver_match.url_name == 'help' %}active{% endif %}">
+                        <i class="bi bi-question-circle-fill me-1"></i>Help
+                    </a>
                 {% endif %}
-            </nav>
-        </div>
-    </header>
+        </nav>
+    </aside>
 
+    <div class="app-main">
     <main class="content">
         {% if messages %}
             <ul class="messages" id="serverMessages">
@@ -62,6 +70,12 @@
 
         {% block content %}{% endblock %}
     </main>
+
+    <footer class="site-footer">
+        <p>Task Scheduling System Using a Greedy Algorithm &mdash; final-year project.</p>
+    </footer>
+    </div>
+    </div>
 
     <!-- Modal root: JS injects task-form / delete-confirm partials here for AJAX flows.
          If JS is disabled, the buttons that would open this fall back to normal page links. -->
@@ -77,10 +91,6 @@
 
     <!-- Toast root: JS pushes transient success/error notices here. -->
     <div class="toast-root" id="toastRoot" aria-live="polite"></div>
-
-    <footer class="site-footer">
-        <p>Task Scheduling System Using a Greedy Algorithm &mdash; final-year project.</p>
-    </footer>
 
     <script>window.APP_URLS = { taskList: "{% url 'task_list' %}" };</script>
     <script src="{% static 'scheduler/js/main.js' %}"></script>

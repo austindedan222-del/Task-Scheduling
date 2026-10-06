@@ -20,9 +20,9 @@
                 <td data-label="Deadline">{{ task.deadline }}</td>
                 <td data-label="Duration">{{ task.duration }} min</td>
                 <td class="row-actions">
-                    <button type="button" class="btn btn-small rounded-pill btn-ghost js-edit-task"
+                    <button type="button" class="btn rounded-pill btn-ghost js-edit-task"
                             data-url="{% url 'task_update' task.pk %}"><i class="bi bi-pencil-fill"></i> Edit</button>
-                    <button type="button" class="btn btn-small rounded-pill btn-danger js-delete-task"
+                    <button type="button" class="btn rounded-pill btn-danger js-delete-task"
                             data-url="{% url 'task_delete' task.pk %}" data-title="{{ task.title }}"><i class="bi bi-trash-fill"></i> Delete</button>
                 </td>
             </tr>

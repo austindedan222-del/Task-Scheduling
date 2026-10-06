@@ -26,4 +26,7 @@ urlpatterns = [
     # Schedule
     path('schedule/', views.schedule_view, name='schedule'),
     path('schedule/pdf/', views.schedule_pdf, name='schedule_pdf'),
+
+    # Help
+    path('help/', views.help_page, name='help'),
 ]

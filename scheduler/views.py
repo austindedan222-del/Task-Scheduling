@@ -209,3 +209,10 @@ def schedule_pdf(request):
     tasks = Task.objects.filter(user=request.user)
     scheduled = generate_schedule(tasks)
     return render_schedule_pdf(request.user.username, scheduled)
+
+
+def help_page(request):
+    """Static how-to guide for the whole system. Public (like the login
+    and register pages) so people can read it before creating an account.
+    """
+    return render(request, 'scheduler/help.html')

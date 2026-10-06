@@ -435,3 +435,53 @@ class EmailReminderTests(TestCase):
 
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ['liam@example.com'])
+
+    def test_reminders_go_to_every_user_who_has_an_email(self):
+        """One pass of send_reminders emails each account that has an
+        address on file and something due, and each message only ever
+        contains that user's own tasks."""
+        second = User.objects.create_user('mia', password='pw12345!', email='mia@example.com')
+        make_task(self.user, title='Liams Due Task', days_ahead=1)
+        make_task(second, title='Mias Due Task', days_ahead=1)
+
+        call_command('send_reminders')
+
+        recipients = sorted(m.to[0] for m in mail.outbox)
+        self.assertEqual(recipients, ['liam@example.com', 'mia@example.com'])
+        by_recipient = {m.to[0]: m.body for m in mail.outbox}
+        self.assertIn('Liams Due Task', by_recipient['liam@example.com'])
+        self.assertNotIn('Mias Due Task', by_recipient['liam@example.com'])
+        self.assertIn('Mias Due Task', by_recipient['mia@example.com'])
+        self.assertNotIn('Liams Due Task', by_recipient['mia@example.com'])
+
+    def test_dashboard_always_offers_the_reminder_button(self):
+        # The button used to render only when something was due, which
+        # made the feature undiscoverable on a fresh account.
+        self.client.login(username='liam', password='pw12345!')
+        response = self.client.get(reverse('dashboard'))
+        self.assertContains(response, reverse('send_reminder_now'))
+
+    def test_reminder_button_with_nothing_due_reports_instead_of_failing(self):
+        self.client.login(username='liam', password='pw12345!')
+        response = self.client.post(reverse('send_reminder_now'))
+        self.assertRedirects(response, reverse('dashboard'))
+        self.assertEqual(len(mail.outbox), 0)
+
+
+class HelpPageTests(TestCase):
+    """The how-to guide must be reachable from the nav, logged in or out."""
+
+    def test_help_page_publicly_accessible(self):
+        response = self.client.get(reverse('help'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Help &amp; User Guide')
+
+    def test_help_page_reachable_from_sidebar_when_logged_in(self):
+        User.objects.create_user('hana2', password='pw12345!')
+        self.client.login(username='hana2', password='pw12345!')
+        response = self.client.get(reverse('dashboard'))
+        self.assertContains(response, reverse('help'))
+
+    def test_help_page_documents_email_reminders(self):
+        response = self.client.get(reverse('help'))
+        self.assertContains(response, 'Email My Reminders Now')

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Help — Task Scheduler{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1><i class="bi bi-question-circle-fill me-1"></i>Help &amp; User Guide</h1>
+        <p class="page-subtitle">Everything you need to know about scheduling your tasks.</p>
+    </div>
+</div>
+
+<section class="help-section">
+    <div class="summary-cards">
+        <div class="card shadow-sm help-card">
+            <span class="help-step">1</span>
+            <span class="card-label">Add your tasks</span>
+            <p>Press <strong>Add Task</strong> on the dashboard or the My Tasks page. Give it a title, an optional description, a <strong>deadline</strong>, a <strong>priority</strong> from 1 (lowest) to 10 (highest), and how many <strong>minutes</strong> you think it will take.</p>
+        </div>
+        <div class="card shadow-sm help-card">
+            <span class="help-step">2</span>
+            <span class="card-label">Generate your schedule</span>
+            <p>Open <strong>Schedule</strong> and the greedy algorithm orders your tasks by urgency — high priority and near deadlines come first. You can <strong>Export to PDF</strong> to keep a copy.</p>
+        </div>
+        <div class="card shadow-sm help-card">
+            <span class="help-step">3</span>
+            <span class="card-label">Get reminder emails</span>
+            <p>The dashboard lists what is <strong>Due Soon</strong> (next 2 days) and <strong>Overdue</strong>. Click <strong>Email My Reminders Now</strong> to send yourself a summary email immediately.</p>
+        </div>
+        <div class="card shadow-sm help-card">
+            <span class="help-step">4</span>
+            <span class="card-label">Watch your limits</span>
+            <p>If the tasks due on one day add up to more than 24 hours of work, an <strong>overload warning</strong> appears so you can move something earlier or trim its estimate.</p>
+        </div>
+    </div>
+</section>
+
+<section class="task-section">
+    <h2><i class="bi bi-ui-checks-grid me-1"></i>Step-by-step</h2>
+    <ul class="simple-list help-list">
+        <li><strong>Create an account</strong> — click <em>Create Account</em>. An email address is <strong>required</strong> because reminder emails are sent to it.</li>
+        <li><strong>Add a task</strong> — the add/edit form opens as a popup. Title, deadline, priority (1–10) and duration (minutes) are required; description is optional.</li>
+        <li><strong>Edit or delete</strong> — use the <em>Edit</em> and <em>Delete</em> buttons in the task table on the My Tasks page. You only ever see your own tasks.</li>
+        <li><strong>Generate a schedule</strong> — the Schedule page ranks every task by a score of priority and days remaining, then lays them out earliest-first so the most urgent work is done first.</li>
+        <li><strong>Export to PDF</strong> — the Schedule page can save the generated order as a PDF file.</li>
+        <li><strong>Log out</strong> — the Logout button at the bottom of the sidebar ends your session on this device.</li>
+    </ul>
+</section>
+
+<section class="task-section">
+    <h2><i class="bi bi-envelope-paper-fill me-1"></i>Email reminders</h2>
+    <ul class="simple-list help-list">
+        <li><strong>Right now:</strong> click <em>Email My Reminders Now</em> on the dashboard and a summary of your due-soon and overdue tasks is emailed to your account address straight away.</li>
+        <li><strong>In the background:</strong> the <code>send_reminders</code> command checks every account for tasks due within 2 days or already overdue and emails each user once. It is meant to be run on a schedule (cron on Linux/macOS, Task Scheduler on Windows) — see the project README for the exact line to use.</li>
+        <li><strong>Nothing to send?</strong> If no task is due soon and none is overdue, no email is sent — you will see a message telling you so.</li>
+        <li><strong>No email address?</strong> Accounts without an email address are skipped, so make sure your profile has one.</li>
+    </ul>
+</section>
+
+<section class="task-section">
+    <h2><i class="bi bi-lightbulb-fill me-1"></i>Tips</h2>
+    <ul class="simple-list help-list">
+        <li>Be realistic about <strong>duration</strong> — it drives both the schedule and the overload warning.</li>
+        <li>Re-run the schedule after adding or editing tasks so the order stays current.</li>
+        <li>Deadlines are dates (not times); a task becomes <em>overdue</em> the day after its deadline passes.</li>
+    </ul>
+</section>
+
+<div class="empty-state">
+    <i class="bi bi-chat-dots-fill" style="font-size: 2rem; color: var(--color-text-muted);"></i>
+    <p>Still stuck? Add a task and try the dashboard — the system is designed to be explored.</p>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'register' %}" class="btn btn-primary rounded-pill">Create an account</a>
+    {% else %}
+    <a href="{% url 'dashboard' %}" class="btn btn-primary rounded-pill">Back to dashboard</a>
+    {% endif %}
+</div>
+{% endblock %}
