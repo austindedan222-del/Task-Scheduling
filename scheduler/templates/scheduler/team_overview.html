@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Team Overview — {{ workspace.name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-clipboard-data me-1"></i>Team Overview — {{ workspace.name }}</h1>
+    <a href="{% url 'workspace_detail' workspace.pk %}" class="btn btn-secondary rounded-pill"><i class="bi bi-people me-1"></i>Workspace</a>
+</div>
+
+<p class="field-hint" style="margin-bottom: 1.25rem;">
+    Status and progress for every task assigned <em>inside this workspace</em>.
+    Personal tasks are private to their owner and never appear here. This page
+    runs no algorithm — each member's generated schedule stays theirs alone.
+</p>
+
+{% for entry in team %}
+<section class="task-section">
+    <h2>
+        <i class="bi bi-person-circle me-1"></i>{{ entry.membership.user.username }}
+        <span class="role-badge role-{{ entry.membership.role }}">{{ entry.membership.get_role_display }}</span>
+        {% if entry.membership.user.email %}<span class="field-hint">{{ entry.membership.user.email }}</span>{% endif %}
+    </h2>
+
+    {% if entry.tasks %}
+    <div class="table-wrapper shadow-sm">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Deadline</th>
+                    <th>Priority</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in entry.tasks %}
+                <tr>
+                    <td data-label="Task"><strong>{{ task.title }}</strong></td>
+                    <td data-label="Deadline">{{ task.deadline|date:"Y-m-d H:i" }}</td>
+                    <td data-label="Priority">
+                        <span class="priority-badge rounded-pill priority-{{ task.priority }}">{{ task.priority }}</span>
+                    </td>
+                    <td data-label="Duration">{{ task.duration_value }} {{ task.duration_unit }}</td>
+                    <td data-label="Status">
+                        <span class="status-badge status-{{ task.status }}">{{ task.get_status_display }}</span>
+                        {% if task.status == 'in_progress' %}
+                        <div class="progress-track" aria-label="{{ task.percent_complete }}% complete">
+                            <div class="progress-fill" style="width: {{ task.percent_complete }}%"></div>
+                        </div>
+                        <span class="progress-percent">{{ task.percent_complete }}%</span>
+                        {% endif %}
+                    </td>
+                    <td class="row-actions">
+                        <a href="{% url 'task_update' task.pk %}" class="btn rounded-pill btn-ghost"><i class="bi bi-pencil-fill"></i> Edit</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="field-hint">
+        No workspace tasks yet.
+        <a href="{% url 'workspace_assign_task' workspace.pk %}">Assign one</a>.
+    </p>
+    {% endif %}
+</section>
+{% empty %}
+<div class="empty-state">
+    <i class="bi bi-people" style="font-size: 2rem; color: var(--color-text-muted);"></i>
+    <p>No members in this workspace yet.</p>
+    <a href="{% url 'workspace_detail' workspace.pk %}" class="btn btn-primary rounded-pill">Add members</a>
+</div>
+{% endfor %}
+{% endblock %}

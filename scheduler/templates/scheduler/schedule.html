@@ -30,8 +30,8 @@
                 <td data-label="Priority">
                     <span class="priority-badge rounded-pill priority-{{ item.task.priority }}">{{ item.task.priority }}</span>
                 </td>
-                <td data-label="Deadline">{{ item.task.deadline }}</td>
-                <td data-label="Duration">{{ item.task.duration }} min</td>
+                <td data-label="Deadline">{{ item.task.deadline|date:"Y-m-d H:i" }}</td>
+                <td data-label="Duration">{{ item.task.duration_minutes }} min</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Settings — {{ workspace.name }} — Task Scheduler{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-gear-fill me-1"></i> Workspace settings</h1>
+    <a href="{% url 'workspace_detail' workspace.pk %}" class="btn rounded-pill btn-ghost"><i class="bi bi-arrow-left"></i> Back to {{ workspace.name }}</a>
+</div>
+
+<section class="task-section">
+    <h2><i class="bi bi-pencil-fill me-1"></i> Rename workspace</h2>
+    <form method="post" class="form-page">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<p class="form-error">{{ form.non_field_errors|striptags }}</p>{% endif %}
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}">Workspace name</label>
+            {{ form.name }}
+            {% for error in form.name.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary rounded-pill"><i class="bi bi-check-lg me-1"></i>Save Name</button>
+        </div>
+    </form>
+</section>
+
+<section class="task-section">
+    <h2><i class="bi bi-exclamation-triangle-fill me-1" style="color: var(--color-danger);"></i> Danger zone</h2>
+    <p class="field-hint">Deleting this workspace removes all {{ member_count }} membership(s) and all {{ task_count }} workspace task(s) in it.
+       Members' personal tasks (outside this workspace) are never affected.</p>
+    <a href="{% url 'workspace_delete' workspace.pk %}" class="btn rounded-pill btn-danger"><i class="bi bi-trash-fill me-1"></i>Delete Workspace</a>
+</section>
+{% endblock %}

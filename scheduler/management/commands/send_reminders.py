@@ -17,6 +17,7 @@ from django.core.management.base import BaseCommand
 
 from scheduler.models import Task
 from scheduler.services.reminder_service import (
+    EmailSendError,
     get_due_soon_tasks,
     get_overdue_tasks,
     send_reminder_email,
@@ -28,23 +29,38 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         sent_count = 0
+        failed_count = 0
         skipped_no_email = 0
 
         for user in User.objects.filter(is_active=True):
-            tasks = Task.objects.filter(user=user)
+            # Personal + workspace tasks assigned to this person — one
+            # person's reminder list, never anyone else's.
+            tasks = Task.objects.filter(assigned_to=user)
             due_soon = get_due_soon_tasks(tasks)
             overdue = get_overdue_tasks(tasks)
 
             if not due_soon and not overdue:
                 continue
 
-            if send_reminder_email(user, due_soon, overdue):
-                sent_count += 1
-                self.stdout.write(f"Sent reminder to {user.username} <{user.email}>")
-            else:
-                skipped_no_email += 1
+            try:
+                if send_reminder_email(user, due_soon, overdue):
+                    sent_count += 1
+                    self.stdout.write(
+                        f"Sent reminder to {user.username} <{user.email}>"
+                    )
+                else:
+                    skipped_no_email += 1
+            except EmailSendError as exc:
+                # One bad address (or one SMTP hiccup that survived the
+                # retries) must not stop everyone else's reminder:
+                # log it to stderr — this is the line to grep in the
+                # cron / Task Scheduler log — and move on.
+                failed_count += 1
+                self.stderr.write(self.style.ERROR(f"FAILED {exc}"))
+                continue
 
         self.stdout.write(self.style.SUCCESS(
             f"Done. Sent {sent_count} reminder email(s); "
+            f"{failed_count} failed; "
             f"{skipped_no_email} user(s) had tasks due but no email on file."
         ))

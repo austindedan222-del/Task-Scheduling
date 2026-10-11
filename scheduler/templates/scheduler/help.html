@@ -13,7 +13,7 @@
         <div class="card shadow-sm help-card">
             <span class="help-step">1</span>
             <span class="card-label">Add your tasks</span>
-            <p>Press <strong>Add Task</strong> on the dashboard or the My Tasks page. Give it a title, an optional description, a <strong>deadline</strong>, a <strong>priority</strong> from 1 (lowest) to 10 (highest), and how many <strong>minutes</strong> you think it will take.</p>
+            <p>Press <strong>Add Task</strong> on the dashboard or the My Tasks page. Give it a title, an optional description, a <strong>deadline</strong> (date <em>and</em> time of day), a <strong>priority</strong> from 1 (lowest) to 10 (highest), and a <strong>duration</strong> with a unit — minutes, hours, days, weeks or months.</p>
         </div>
         <div class="card shadow-sm help-card">
             <span class="help-step">2</span>
@@ -37,7 +37,7 @@
     <h2><i class="bi bi-ui-checks-grid me-1"></i>Step-by-step</h2>
     <ul class="simple-list help-list">
         <li><strong>Create an account</strong> — click <em>Create Account</em>. An email address is <strong>required</strong> because reminder emails are sent to it.</li>
-        <li><strong>Add a task</strong> — the add/edit form opens as a popup. Title, deadline, priority (1–10) and duration (minutes) are required; description is optional.</li>
+        <li><strong>Add a task</strong> — the add/edit form opens as a popup. Title, deadline (date and time), priority (1–10) and duration (value + unit) are required; description is optional.</li>
         <li><strong>Edit or delete</strong> — use the <em>Edit</em> and <em>Delete</em> buttons in the task table on the My Tasks page. You only ever see your own tasks.</li>
         <li><strong>Generate a schedule</strong> — the Schedule page ranks every task by a score of priority and days remaining, then lays them out earliest-first so the most urgent work is done first.</li>
         <li><strong>Export to PDF</strong> — the Schedule page can save the generated order as a PDF file.</li>
@@ -56,11 +56,31 @@
 </section>
 
 <section class="task-section">
+    <h2><i class="bi bi-people-fill me-1"></i>Workspaces &amp; team supervision</h2>
+    <ul class="simple-list help-list">
+        <li><strong>Create a workspace</strong> — open <em>Workspaces</em> in the sidebar and give it a name. You become its <em>supervisor</em>; supervisors see every member and every task created inside that workspace.</li>
+        <li><strong>Add members</strong> — on the workspace page, enter an existing account's <em>username or email</em>, pick a role (Supervisor or Member) and press <em>Add Member</em>. One person can hold a different role in each workspace.</li>
+        <li><strong>Assign a task</strong> — supervisors press <em>Assign Task</em>, fill in the form and choose who it goes to. It lands in that member's My Tasks and their own schedule, and appears in <em>Team Overview</em> with its status and progress bar.</li>
+        <li><strong>Team Overview</strong> — the supervisor's dashboard of every member's workspace tasks, side by side. It shows status only — it never generates a combined schedule, and each person's schedule is computed from their own tasks alone.</li>
+        <li><strong>Privacy</strong> — tasks you add normally are <em>personal</em>: nobody else, not even a supervisor, can see them. Only tasks assigned inside a workspace are overseen by its supervisor.</li>
+        <li><strong>Members</strong> can update the status and percent-complete of tasks assigned to them; only supervisors can edit or reassign any workspace task.</li>
+    </ul>
+</section>
+
+<section class="task-section">
+    <h2><i class="bi bi-graph-up me-1"></i>Progress tracking</h2>
+    <ul class="simple-list help-list">
+        <li>Every task has a <strong>status</strong> — Not Started, In Progress or Completed — shown as a colored badge, plus a <strong>progress bar</strong> (0–100%) while it is in progress. Set them in the add/edit form.</li>
+        <li><strong>Completed</strong> tasks are finished work: they are left out of the generated schedule, the overload warning, and reminder emails.</li>
+    </ul>
+</section>
+
+<section class="task-section">
     <h2><i class="bi bi-lightbulb-fill me-1"></i>Tips</h2>
     <ul class="simple-list help-list">
-        <li>Be realistic about <strong>duration</strong> — it drives both the schedule and the overload warning.</li>
+        <li>Be realistic about <strong>duration</strong> — it drives both the schedule and the overload warning; the system converts any unit (hours, days, weeks, months) to minutes internally.</li>
         <li>Re-run the schedule after adding or editing tasks so the order stays current.</li>
-        <li>Deadlines are dates (not times); a task becomes <em>overdue</em> the day after its deadline passes.</li>
+        <li>Deadlines include a <strong>time of day</strong>; a task becomes <em>overdue</em> once its deadline date has passed, and the sooner it is due the higher its urgency.</li>
     </ul>
 </section>
 

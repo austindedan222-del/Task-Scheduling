@@ -191,11 +191,20 @@
             }
         }
 
-        var duration = form.querySelector('[name="duration"]');
+        var duration = form.querySelector('[name="duration_value"]');
         if (duration) {
             var dVal = parseInt(duration.value, 10);
             if (isNaN(dVal) || dVal <= 0) {
-                setFieldError(form, 'duration', 'Duration must be a positive number of minutes.');
+                setFieldError(form, 'duration_value', 'Duration must be a positive number.');
+                valid = false;
+            }
+        }
+
+        var percent = form.querySelector('[name="percent_complete"]');
+        if (percent && percent.value !== '') {
+            var pcVal = parseInt(percent.value, 10);
+            if (isNaN(pcVal) || pcVal < 0 || pcVal > 100) {
+                setFieldError(form, 'percent_complete', 'Percent complete must be from 0 to 100.');
                 valid = false;
             }
         }

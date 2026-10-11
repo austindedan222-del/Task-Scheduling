@@ -39,6 +39,9 @@
                     <a href="{% url 'schedule' %}" class="btn rounded-pill nav-btn {% if request.resolver_match.url_name == 'schedule' %}active{% endif %}">
                         <i class="bi bi-calendar2-week-fill me-1"></i>Schedule
                     </a>
+                    <a href="{% url 'workspace_list' %}" class="btn rounded-pill nav-btn {% if request.resolver_match.url_name == 'workspace_list' or request.resolver_match.url_name == 'workspace_detail' or request.resolver_match.url_name == 'workspace_invite' or request.resolver_match.url_name == 'workspace_assign_task' or request.resolver_match.url_name == 'workspace_team_overview' %}active{% endif %}">
+                        <i class="bi bi-people-fill me-1"></i>Workspaces
+                    </a>
                     <a href="{% url 'help' %}" class="btn rounded-pill nav-btn {% if request.resolver_match.url_name == 'help' %}active{% endif %}">
                         <i class="bi bi-question-circle-fill me-1"></i>Help
                     </a>

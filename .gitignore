@@ -222,3 +222,6 @@ __marimo__/
 # Project-specific (added on top of the GitHub Python template)
 staticfiles/
 .DS_Store
+# SQLite→PostgreSQL dumps (dumpdata output) — contains password hashes
+db_dump*.json
+.freebuff/

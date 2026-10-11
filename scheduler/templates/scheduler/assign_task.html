@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Assign Task — Task Scheduler{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h1><i class="bi bi-person-plus-fill me-1"></i>Assign a Task</h1>
+    <p class="field-hint">
+        Create a task inside <strong>{{ workspace.name }}</strong> and hand it to one of
+        its members. It becomes workspace work: it shows up in their My Tasks and in
+        Team Overview, and you can edit or reassign it at any time.
+    </p>
+
+    {% url 'workspace_assign_task' workspace.pk as assign_url %}
+    {% url 'workspace_detail' workspace.pk as detail_url %}
+    {% include 'scheduler/partials/task_form_fields.html' with form_action=assign_url use_ajax=False cancel_url=detail_url %}
+</div>
+{% endblock %}

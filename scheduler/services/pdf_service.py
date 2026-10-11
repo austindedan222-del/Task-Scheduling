@@ -9,6 +9,7 @@ displays, so the PDF can never drift from what the user sees on screen.
 from io import BytesIO
 
 from django.http import HttpResponse
+from django.utils import timezone
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
@@ -49,8 +50,8 @@ def render_schedule_pdf(username: str, scheduled_tasks) -> HttpResponse:
             str(index),
             item.task.title,
             str(item.task.priority),
-            item.task.deadline.strftime('%Y-%m-%d'),
-            str(item.task.duration),
+            timezone.localtime(item.task.deadline).strftime('%Y-%m-%d %H:%M'),
+            str(item.task.duration_minutes),
         ])
 
     if len(rows) == 1:

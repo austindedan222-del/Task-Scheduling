@@ -238,6 +238,52 @@ body {
     background: #dcfce7; color: var(--color-success);
 }
 
+/* Status badges + progress bar (progress tracking) — same pill shape
+   and sizing as the priority badge so tables stay visually consistent. */
+.status-badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    background: #e5e7eb;
+    color: var(--color-text);
+}
+.status-badge.status-not_started { background: #e5e7eb; color: #4b5563; }
+.status-badge.status-in_progress { background: #dbeafe; color: var(--color-primary); }
+.status-badge.status-completed { background: #dcfce7; color: var(--color-success); }
+
+.progress-track {
+    width: 110px;
+    height: 7px;
+    margin-top: 0.35rem;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--color-primary), #7c3aed);
+    transition: width 0.4s ease;
+}
+.progress-percent { font-size: 0.78rem; color: var(--color-text-muted); }
+
+/* Workspace role badges — same pill geometry as the badges above. */
+.role-badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    background: #e5e7eb;
+    color: #4b5563;
+}
+.role-badge.role-supervisor { background: #ede9fe; color: #6d28d9; }
+.role-badge.role-member { background: #e5e7eb; color: #4b5563; }
+
 .schedule-note { color: var(--color-text-muted); font-size: 0.85rem; margin-top: 1rem; }
 
 /* Forms */
@@ -245,7 +291,7 @@ body {
 .form-group { margin-bottom: 1.1rem; }
 .form-group label { display: block; font-weight: 600; margin-bottom: 0.3rem; font-size: 0.9rem; }
 
-input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="date"], textarea {
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="date"], input[type="datetime-local"], select, textarea {
     width: 100%;
     padding: 0.6rem 0.75rem;
     border: 1px solid var(--color-border);
@@ -253,15 +299,21 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
     font-size: 0.95rem;
     font-family: inherit;
     background: var(--color-surface);
+    color: var(--color-text);
 }
 
-input:focus, textarea:focus {
+input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-input, textarea { transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+input, select, textarea { transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+
+/* Duration = value + unit pair, side by side. */
+.duration-row { display: flex; gap: 0.6rem; }
+.duration-row input { flex: 1; }
+.duration-row select { width: auto; min-width: 8.5rem; }
 
 .field-hint { color: var(--color-text-muted); font-size: 0.8rem; margin: 0.25rem 0 0; }
 .form-error { color: var(--color-danger); font-size: 0.85rem; margin: 0.25rem 0 0; }

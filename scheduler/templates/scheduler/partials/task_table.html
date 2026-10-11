@@ -7,6 +7,7 @@
                 <th>Priority</th>
                 <th>Deadline</th>
                 <th>Duration</th>
+                <th>Status</th>
                 <th></th>
             </tr>
         </thead>
@@ -17,8 +18,17 @@
                 <td data-label="Priority">
                     <span class="priority-badge rounded-pill priority-{{ task.priority }}">{{ task.priority }}</span>
                 </td>
-                <td data-label="Deadline">{{ task.deadline }}</td>
-                <td data-label="Duration">{{ task.duration }} min</td>
+                <td data-label="Deadline">{{ task.deadline|date:"Y-m-d H:i" }}</td>
+                <td data-label="Duration">{{ task.duration_value }} {{ task.duration_unit }}</td>
+                <td data-label="Status">
+                    <span class="status-badge status-{{ task.status }}">{{ task.get_status_display }}</span>
+                    {% if task.status == 'in_progress' %}
+                    <div class="progress-track" aria-label="{{ task.percent_complete }}% complete">
+                        <div class="progress-fill" style="width: {{ task.percent_complete }}%"></div>
+                    </div>
+                    <span class="progress-percent">{{ task.percent_complete }}%</span>
+                    {% endif %}
+                </td>
                 <td class="row-actions">
                     <button type="button" class="btn rounded-pill btn-ghost js-edit-task"
                             data-url="{% url 'task_update' task.pk %}"><i class="bi bi-pencil-fill"></i> Edit</button>

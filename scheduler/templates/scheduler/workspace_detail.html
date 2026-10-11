@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}{{ workspace.name }} — Task Scheduler{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-people-fill me-1"></i> {{ workspace.name }}</h1>
+    <span class="role-badge role-{{ membership.role }}">{{ membership.get_role_display }}</span>
+</div>
+
+<div class="hero-actions" style="margin-bottom: 1.25rem;">
+    {% if is_supervisor %}
+    <a href="{% url 'workspace_team_overview' workspace.pk %}" class="btn btn-primary rounded-pill">
+        <i class="bi bi-clipboard-data me-1"></i>Team Overview
+    </a>
+    <a href="{% url 'workspace_assign_task' workspace.pk %}" class="btn btn-secondary rounded-pill">
+        <i class="bi bi-person-plus-fill me-1"></i>Assign Task
+    </a>
+    <a href="{% url 'workspace_settings' workspace.pk %}" class="btn rounded-pill btn-ghost">
+        <i class="bi bi-gear-fill me-1"></i>Settings
+    </a>
+    {% endif %}
+    <form method="post" action="{% url 'workspace_leave' workspace.pk %}" style="display:inline;"
+          onsubmit="return confirm('Leave \"{{ workspace.name }}\"? Your tasks in it are handed to a supervisor.');">
+        {% csrf_token %}
+        <button type="submit" class="btn rounded-pill btn-danger">
+            <i class="bi bi-box-arrow-right me-1"></i>Leave Workspace
+        </button>
+    </form>
+</div>
+
+<section class="task-section">
+    <h2><i class="bi bi-person-badge me-1"></i>Members ({{ members|length }})</h2>
+    <div class="table-wrapper shadow-sm">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in members %}
+                <tr>
+                    <td data-label="Username"><strong>{{ member.user.username }}</strong>{% if member.user == user %} <span class="field-hint">(you)</span>{% endif %}</td>
+                    <td data-label="Email">{{ member.user.email|default:"—" }}</td>
+                    <td data-label="Role"><span class="role-badge role-{{ member.role }}">{{ member.get_role_display }}</span></td>
+                    <td data-label="Joined">{{ member.joined_at|date:"Y-m-d" }}</td>
+                    <td class="row-actions">
+                        {% if is_supervisor and member.user != user %}
+                        <form method="post" action="{% url 'workspace_change_role' workspace.pk member.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            {% if member.role == 'supervisor' %}
+                            <input type="hidden" name="role" value="member">
+                            <button type="submit" class="btn rounded-pill btn-ghost"><i class="bi bi-arrow-down-circle me-1"></i>Demote</button>
+                            {% else %}
+                            <input type="hidden" name="role" value="supervisor">
+                            <button type="submit" class="btn rounded-pill btn-ghost"><i class="bi bi-arrow-up-circle me-1"></i>Promote</button>
+                            {% endif %}
+                        </form>
+                        <form method="post" action="{% url 'workspace_remove_member' workspace.pk member.pk %}" style="display:inline;"
+                              onsubmit="return confirm('Remove {{ member.user.username }} from \"{{ workspace.name }}\"? Their workspace tasks are handed to you.');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn rounded-pill btn-danger"><i class="bi bi-person-dash-fill me-1"></i>Remove</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% if is_supervisor %}
+<section class="task-section">
+    <h2><i class="bi bi-person-plus-fill me-1"></i>Add a member</h2>
+    <form method="post" action="{% url 'workspace_invite' workspace.pk %}" class="form-page">
+        {% csrf_token %}
+        {% if invite_form.non_field_errors %}<p class="form-error">{{ invite_form.non_field_errors|striptags }}</p>{% endif %}
+        <div class="form-group">
+            <label for="{{ invite_form.identifier.id_for_label }}">Username or email</label>
+            {{ invite_form.identifier }}
+            <p class="field-hint">The account must already exist — they register from the Create Account page.</p>
+            {% for error in invite_form.identifier.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="form-group">
+            <label for="{{ invite_form.role.id_for_label }}">Role</label>
+            {{ invite_form.role }}
+            {% for error in invite_form.role.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary rounded-pill"><i class="bi bi-person-plus-fill me-1"></i>Add Member</button>
+        </div>
+    </form>
+</section>
+{% else %}
+<section class="task-section">
+    <p class="field-hint">Only the workspace supervisor can add members or assign tasks.</p>
+</section>
+{% endif %}
+{% endblock %}

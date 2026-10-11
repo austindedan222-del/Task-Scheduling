@@ -52,7 +52,7 @@
         <h2><i class="bi bi-exclamation-triangle-fill text-danger me-1"></i>Overdue</h2>
         <ul class="simple-list">
             {% for task in overdue %}
-                <li><strong>{{ task.title }}</strong> — was due {{ task.deadline }}</li>
+                <li><strong>{{ task.title }}</strong> — was due {{ task.deadline|date:"Y-m-d H:i" }}</li>
             {% endfor %}
         </ul>
     </section>
@@ -63,7 +63,7 @@
         <h2><i class="bi bi-alarm-fill text-warning me-1"></i>Due Soon</h2>
         <ul class="simple-list">
             {% for task in due_soon %}
-                <li><strong>{{ task.title }}</strong> — due {{ task.deadline }} (priority {{ task.priority }})</li>
+                <li><strong>{{ task.title }}</strong> — due {{ task.deadline|date:"Y-m-d H:i" }} (priority {{ task.priority }})</li>
             {% endfor %}
         </ul>
     </section>

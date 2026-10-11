@@ -1,4 +1,5 @@
-<form method="post" class="task-form js-task-form" action="{% if mode == 'edit' %}{% url 'task_update' task.pk %}{% else %}{% url 'task_create' %}{% endif %}" novalidate>
+{% url 'task_list' as default_cancel_url %}
+<form method="post" class="task-form{% if use_ajax is None or use_ajax %} js-task-form{% endif %}" action="{% if form_action %}{{ form_action }}{% elif mode == 'edit' %}{% url 'task_update' task.pk %}{% else %}{% url 'task_create' %}{% endif %}" novalidate>
     {% csrf_token %}
     {% if form.non_field_errors %}
         <p class="form-error">{{ form.non_field_errors|striptags }}</p>
@@ -15,8 +16,9 @@
         {% for error in form.description.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
     </div>
     <div class="form-group">
-        <label for="{{ form.deadline.id_for_label }}">Deadline</label>
+        <label for="{{ form.deadline.id_for_label }}">Deadline (date &amp; time)</label>
         {{ form.deadline }}
+        <p class="field-hint">Include the time of day, e.g. 2026-10-09 17:30.</p>
         <p class="field-hint js-field-hint" data-for="deadline"></p>
         {% for error in form.deadline.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
     </div>
@@ -31,17 +33,44 @@
         {% for error in form.priority.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
     </div>
     <div class="form-group">
-        <label for="{{ form.duration.id_for_label }}">Duration (minutes)</label>
-        {{ form.duration }}
-        <p class="field-hint js-field-hint" data-for="duration"></p>
-        {% for error in form.duration.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        <label for="{{ form.duration_value.id_for_label }}">Duration</label>
+        <div class="duration-row">
+            {{ form.duration_value }}
+            {{ form.duration_unit }}
+        </div>
+        <p class="field-hint">How long you think it will take (e.g. 90 minutes, 2 hours, 1 month).</p>
+        <p class="field-hint js-field-hint" data-for="duration_value"></p>
+        {% for error in form.duration_value.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        {% for error in form.duration_unit.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
     </div>
+
+    <div class="form-group">
+        <label for="{{ form.status.id_for_label }}">Status</label>
+        {{ form.status }}
+        {% for error in form.status.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.percent_complete.id_for_label }}">Percent complete</label>
+        {{ form.percent_complete }}
+        <p class="field-hint">0–100. Only used while the status is "In Progress".</p>
+        <p class="field-hint js-field-hint" data-for="percent_complete"></p>
+        {% for error in form.percent_complete.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+    </div>
+
+    {% if form.assigned_to %}
+    <div class="form-group">
+        <label for="{{ form.assigned_to.id_for_label }}">Assign to</label>
+        {{ form.assigned_to }}
+        <p class="field-hint">Only members of this workspace can be picked.</p>
+        {% for error in form.assigned_to.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+    </div>
+    {% endif %}
 
     <div class="form-actions">
         <button type="submit" class="btn btn-primary rounded-pill js-submit-btn">
             <span class="btn-label"><i class="bi bi-check-lg me-1"></i>Save Task</span>
             <span class="btn-spinner" aria-hidden="true"></span>
         </button>
-        <a href="{% url 'task_list' %}" class="btn btn-ghost rounded-pill js-cancel-task">Cancel</a>
+        <a href="{% if cancel_url %}{{ cancel_url }}{% else %}{{ default_cancel_url }}{% endif %}" class="btn btn-ghost rounded-pill js-cancel-task">Cancel</a>
     </div>
 </form>

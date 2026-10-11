@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Workspaces — Task Scheduler{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-people-fill me-1"></i>Workspaces</h1>
+</div>
+
+<section class="task-section">
+    <h2><i class="bi bi-plus-lg me-1"></i>Create a workspace</h2>
+    <form method="post" class="form-page">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<p class="form-error">{{ form.non_field_errors|striptags }}</p>{% endif %}
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}">Workspace name</label>
+            {{ form.name }}
+            {% for error in form.name.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary rounded-pill"><i class="bi bi-people-fill me-1"></i>Create Workspace</button>
+        </div>
+        <p class="field-hint">You become the supervisor of any workspace you create — supervisors can add members and assign tasks to them.</p>
+    </form>
+</section>
+
+<section class="task-section">
+    <h2><i class="bi bi-folder2-open me-1"></i>Your workspaces</h2>
+    {% if memberships %}
+    <div class="table-wrapper shadow-sm">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Your role</th>
+                    <th>Created by</th>
+                    <th>Joined</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for membership in memberships %}
+                <tr>
+                    <td data-label="Name"><a href="{% url 'workspace_detail' membership.workspace.pk %}"><strong>{{ membership.workspace.name }}</strong></a></td>
+                    <td data-label="Your role"><span class="role-badge role-{{ membership.role }}">{{ membership.get_role_display }}</span></td>
+                    <td data-label="Created by">{{ membership.workspace.created_by.username }}</td>
+                    <td data-label="Joined">{{ membership.joined_at|date:"Y-m-d" }}</td>
+                    <td class="row-actions">
+                        <a href="{% url 'workspace_detail' membership.workspace.pk %}" class="btn rounded-pill btn-ghost"><i class="bi bi-box-arrow-in-right"></i> Open</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="bi bi-people" style="font-size: 2rem; color: var(--color-text-muted);"></i>
+        <p>You don't belong to any workspaces yet.</p>
+        <p class="field-hint">Create one above to collaborate — or ask a supervisor to add you by username or email.</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

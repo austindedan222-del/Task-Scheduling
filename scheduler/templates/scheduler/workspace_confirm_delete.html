@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Delete {{ workspace.name }}? — Task Scheduler{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-exclamation-triangle-fill me-1" style="color: var(--color-danger);"></i> Delete "{{ workspace.name }}"?</h1>
+</div>
+
+<section class="task-section">
+    <p>This permanently deletes:</p>
+    <ul>
+        <li><strong>{{ member_count }}</strong> membership(s) — everyone loses access immediately</li>
+        <li><strong>{{ task_count }}</strong> workspace task(s) assigned inside this workspace:
+            <ul>
+                {% for task in doomed_tasks %}<li>{{ task.title }}</li>{% endfor %}
+            </ul>
+        </li>
+    </ul>
+    <p class="field-hint">Personal tasks (created outside any workspace) are never touched.</p>
+    <form method="post" action="{% url 'workspace_delete' workspace.pk %}" class="form-page" style="display:flex; gap: .5rem;">
+        {% csrf_token %}
+        <button type="submit" class="btn rounded-pill btn-danger"><i class="bi bi-trash-fill me-1"></i>Yes, Delete Workspace</button>
+        <a href="{% url 'workspace_settings' workspace.pk %}" class="btn rounded-pill btn-ghost">Cancel</a>
+    </form>
+</section>
+{% endblock %}
